@@ -6,7 +6,7 @@
     </Body>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useHead} from "nuxt/app";
 
 useHead({
