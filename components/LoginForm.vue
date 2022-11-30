@@ -2,6 +2,10 @@
     <div class="card">
         <form @submit.prevent="authenticate">
             <div class="card-body login-card-body">
+                <div class="alert alert-danger" v-if="authError !== null">
+                    {{authError.message}}
+                </div>
+
                 <div class="input-group mb-3">
                     <input
                         name="email"
@@ -47,8 +51,27 @@ import {ref} from "vue";
 
 const email = ref('');
 const password = ref('');
+const authError = ref(null);
 
-function authenticate() {
-    // TODO: attempt to fetch JWT
+async function authenticate() {
+    // We can reset the error on multiple attempts
+    authError.value = null;
+
+    const response = await $fetch('/api/login', {
+        method: 'POST',
+        body: {
+            email: email.value,
+            password: password.value,
+        }
+    }).catch((err) => {
+        password.value = '';
+        authError.value = err.data;
+    });
+
+    if (response !== undefined) {
+        // TODO: we might want to emit event here to the page and handle setting a cookie there
+        // TODO: use https://nuxt.com/docs/api/composables/use-cookie this composable to set a token inside cookie
+        console.log(response.accessToken);
+    }
 }
 </script>
