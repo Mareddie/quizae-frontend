@@ -48,6 +48,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
+import {navigateTo} from "#app";
 
 const email = ref('');
 const password = ref('');
@@ -69,9 +70,7 @@ async function authenticate() {
     });
 
     if (response !== undefined) {
-        // TODO: we might want to emit event here to the page and handle setting a cookie there
-        // TODO: use https://nuxt.com/docs/api/composables/use-cookie this composable to set a token inside cookie
-        console.log(response.accessToken);
+        return navigateTo('/app');
     }
 }
 </script>
