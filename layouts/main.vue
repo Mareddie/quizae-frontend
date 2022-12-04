@@ -1,8 +1,21 @@
 <template>
-    <Body class="login-page">
-        <div class="login-box">
-            <slot/>
+    <Body class="sidebar-mini">
+    <div class="wrapper">
+        <AppLayoutTopNavbar />
+        <AppLayoutLeftNavbar />
+
+        <div class="content-wrapper">
+            <AppLayoutPageHeader />
+
+            <div class="content">
+                <div class="container-fluid">
+                    <slot />
+                </div>
+            </div>
         </div>
+
+        <AppLayoutFooter />
+    </div>
     </Body>
 </template>
 
