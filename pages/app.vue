@@ -1,6 +1,9 @@
 <template>
     <NuxtLayout name="main">
         <div class="row">
+            <DashboardMyGamesList />
+            <DashboardMyGroupMembershipsList />
+            <DashboardMyGroupsList />
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
