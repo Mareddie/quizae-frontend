@@ -49,4 +49,4 @@ async function performRequest(url: string, method: string, body?: BodyInit, auth
     });
 }
 
-export default useBase('/api', router.handler);
+export default useBase('/api/users', router.handler);

@@ -36,7 +36,7 @@ useHead({
 
 useState('pageName').value = 'Dashboard';
 
-const { data: profile } = await useFetch('/api/profile', {
+const { data: profile } = await useFetch('/api/users/profile', {
     pick: ['firstName', 'lastName', 'email', 'id'] as any,
     headers: useRequestHeaders(['cookie'])
 })
