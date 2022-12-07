@@ -9,6 +9,10 @@
   },
   "devDependencies": {
     "nuxt": "3.0.0",
+    "nuxt-lodash": "^2.4.1",
     "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "vue-multiselect": "^3.0.0-alpha.2"
   }
 }
