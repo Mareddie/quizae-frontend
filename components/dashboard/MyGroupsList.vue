@@ -41,28 +41,31 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="groupName">Group name</label>
-                                    <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" v-model="groupEditName" required>
-                                </div>
+                            <form @submit.prevent="editGroup">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="groupName">Group name</label>
+                                        <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" v-model="groupEditName" required>
+                                    </div>
 
 
-                                <div class="form-group">
-                                    <label>Group members</label>
-                                    <VueMultiselect v-model="groupEditMembers"
-                                                    :options="groupEditMembersOptions"
-                                                    :multiple="true"
-                                                    :taggable="true"
-                                                    placeholder="Search or add member by email"
-                                                    tag-placeholder="Add member by email"
-                                                    @tag="addGroupMember" />
+                                    <div class="form-group">
+                                        <label>Group members</label>
+                                        <VueMultiselect v-model="groupEditMembers"
+                                                        :options="groupEditMembersOptions"
+                                                        :multiple="true"
+                                                        :taggable="true"
+                                                        placeholder="Search or add member by email"
+                                                        tag-placeholder="Add member by email"
+                                                        @tag="addGroupMember" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save</button>
-                            </div>
+
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -81,6 +84,7 @@ const {data: groups} = await useFetch(
 );
 
 const groupEditName = ref<string|null>(null);
+const groupEditId = ref<string|null>(null);
 const groupEditMembers = ref<string[]>([]);
 const groupEditMembersOptions = ref<string[]>([]);
 
@@ -102,6 +106,7 @@ const prefillGroupFormModal = (key: number) => {
     }
 
     groupEditName.value = loadedGroups[key]['name'];
+    groupEditId.value = loadedGroups[key]['id'];
 
     groupEditMembers.value = useClone(getMembershipUserEmails(key, loadedGroups));
     groupEditMembersOptions.value = useClone(getMembershipUserEmails(key, loadedGroups));
@@ -128,6 +133,26 @@ const getMembershipUserEmails = (key: number, loadedGroups: any): string[] => {
         return membership.user?.email;
     });
 };
+
+const editGroup = async () => {
+    const response = await $fetch(`/api/groups/${groupEditId.value}`, {
+        method: 'PATCH',
+        body: {
+            users: groupEditMembers.value,
+            name: groupEditName.value,
+        },
+        headers: useRequestHeaders(['cookie']),
+    }).catch((err) => err.data);
+
+    if (response.error) {
+        // TODO: handle error response - display error message and don't close modal
+    }
+
+    console.log(response);
+
+    // TODO: emit an event that group was updated
+    // TODO: update groups data and reset groupEdit properties
+}
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
