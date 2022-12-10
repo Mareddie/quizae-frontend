@@ -1,9 +1,15 @@
 <template>
     <NuxtLayout name="main">
         <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-default-success" v-if="successMessage">
+                    {{successMessage}}
+                </div>
+            </div>
+
             <DashboardMyGamesList />
             <DashboardMyGroupMembershipsList />
-            <DashboardMyGroupsList />
+            <DashboardMyGroupsList @group-updated="(message) => updateSuccessMessage(message)" />
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -40,4 +46,15 @@ const { data: profile } = await useFetch('/api/users/profile', {
     pick: ['firstName', 'lastName', 'email', 'id'] as any,
     headers: useRequestHeaders(['cookie'])
 })
+
+const successMessage = ref<string|null>(null);
+
+const updateSuccessMessage = (message) => {
+    successMessage.value = message;
+
+    setTimeout(
+        () => successMessage.value = null,
+        3000
+    );
+}
 </script>

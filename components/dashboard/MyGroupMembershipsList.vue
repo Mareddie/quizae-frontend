@@ -1,5 +1,5 @@
 <template>
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
                 <h2 class="h5 m-0">My Group Memberships</h2>
