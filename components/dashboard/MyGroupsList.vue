@@ -23,14 +23,42 @@
                                     class="btn btn-sm btn-primary"
                                     data-toggle="modal"
                                     data-target="#edit-group-modal"
-                                    @click="prefillGroupFormModal(key)">
+                                    @click="prefillGroupFormModal(key, 'update')">
                                 Edit Group
                             </button>
-                            <a href="#" role="button" class="btn btn-sm btn-danger mx-1">Delete</a>
+                            <button type="button"
+                                    class="btn btn-sm btn-danger mx-1"
+                                    data-toggle="modal"
+                                    data-target="#delete-group-modal"
+                                    @click="prefillGroupFormModal(key, 'delete')">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+
+                <div class="modal fade" id="delete-group-modal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-content bg-danger">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Are You Sure About That</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Do you really want to delete this group? Data about games and questions will be lost.</p>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-outline-light">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="modal fade" id="edit-group-modal" aria-hidden="true">
                     <div class="modal-dialog">
@@ -43,20 +71,20 @@
                             </div>
                             <form @submit.prevent="editGroup">
                                 <div class="modal-body">
-                                    <div class="alert alert-danger" v-if="groupEditError">
-                                        {{groupEditError}}
+                                    <div class="alert alert-danger" v-if="groupData.error">
+                                        {{groupData.error}}
                                     </div>
 
                                     <div class="form-group">
                                         <label for="groupName">Group name</label>
-                                        <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" v-model="groupEditName" required>
+                                        <input type="text" class="form-control" id="groupName" placeholder="Enter Group Name" v-model="groupData.name" required>
                                     </div>
 
 
                                     <div class="form-group">
                                         <label>Group members</label>
-                                        <VueMultiselect v-model="groupEditMembers"
-                                                        :options="groupEditMembersOptions"
+                                        <VueMultiselect v-model="groupData.members"
+                                                        :options="groupData.memberOptions"
                                                         :multiple="true"
                                                         :taggable="true"
                                                         placeholder="Search or add member by email"
@@ -67,8 +95,8 @@
 
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal" id="close-edit-group-modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" v-if="!groupEditInProgress">Save</button>
-                                    <button type="button" class="btn btn-primary disabled" v-if="groupEditInProgress">Saving...</button>
+                                    <button type="submit" class="btn btn-primary" v-if="!groupData.operationInProgress">Save</button>
+                                    <button type="button" class="btn btn-primary disabled" v-if="groupData.operationInProgress">Saving...</button>
                                 </div>
                             </form>
                         </div>
@@ -82,6 +110,7 @@
 <script setup lang="ts">
 import {useFetch, useRequestHeaders} from "nuxt/app";
 import VueMultiselect from "vue-multiselect"
+import {GroupData} from "~/types/group-data";
 
 const emit = defineEmits<{
     (e: 'groupUpdated', message: string): void
@@ -92,12 +121,14 @@ const {data: groups, refresh: groupsRefresh} = await useFetch(
     { key: undefined, headers: useRequestHeaders(['cookie']) }
 );
 
-const groupEditName = ref<string|null>(null);
-const groupEditId = ref<string|null>(null);
-const groupEditMembers = ref<string[]>([]);
-const groupEditMembersOptions = ref<string[]>([]);
-const groupEditError = ref<string|null>(null);
-const groupEditInProgress = ref<boolean>(false);
+const groupData: GroupData = reactive({
+    id: null,
+    name: null,
+    members: [],
+    memberOptions: [],
+    error: null,
+    operationInProgress: false,
+});
 
 const groupMembers = (key: number): string|null => {
     const {value: loadedGroups} = groups;
@@ -109,20 +140,22 @@ const groupMembers = (key: number): string|null => {
     return getMembershipUserEmails(key, loadedGroups).join(', ');
 };
 
-const prefillGroupFormModal = (key: number) => {
+const prefillGroupFormModal = (key: number, action: string) => {
     const {value: loadedGroups} = groups;
 
     if (!loadedGroups || !loadedGroups.hasOwnProperty(key)) {
         return;
     }
 
-    groupEditName.value = loadedGroups[key]['name'];
-    groupEditId.value = loadedGroups[key]['id'];
+    groupData.error = null;
+    groupData.operationInProgress = false;
+    groupData.name = loadedGroups[key]['name'];
+    groupData.id = loadedGroups[key]['id'];
 
-    groupEditMembers.value = useClone(getMembershipUserEmails(key, loadedGroups));
-    groupEditMembersOptions.value = useClone(getMembershipUserEmails(key, loadedGroups));
-    groupEditError.value = null;
-    groupEditInProgress.value = false;
+    if (action === 'update') {
+        groupData.members = useClone(getMembershipUserEmails(key, loadedGroups));
+        groupData.memberOptions = useClone(getMembershipUserEmails(key, loadedGroups));
+    }
 };
 
 const addGroupMember = (newMember: string) => {
@@ -137,8 +170,8 @@ const addGroupMember = (newMember: string) => {
         return;
     }
 
-    groupEditMembers.value.push(validated[0]);
-    groupEditMembersOptions.value.push(validated[0]);
+    groupData.members.push(validated[0]);
+    groupData.memberOptions.push(validated[0]);
 };
 
 const getMembershipUserEmails = (key: number, loadedGroups: any): string[] => {
@@ -148,22 +181,22 @@ const getMembershipUserEmails = (key: number, loadedGroups: any): string[] => {
 };
 
 const editGroup = async () => {
-    groupEditError.value = null;
-    groupEditInProgress.value = true;
+    groupData.error = null;
+    groupData.operationInProgress = true;
 
-    const response = await $fetch(`/api/groups/${groupEditId.value}`, {
+    const response = await $fetch(`/api/groups/${groupData.id}`, {
         method: 'PATCH',
         body: {
-            users: groupEditMembers.value,
-            name: groupEditName.value,
+            users: groupData.members,
+            name: groupData.name,
         },
         headers: useRequestHeaders(['cookie']),
     }).catch((err) => err.data);
 
-    groupEditInProgress.value = false;
+    groupData.operationInProgress = false;
 
     if (response.error) {
-        groupEditError.value = response.error;
+        groupData.error = response.error;
         return;
     }
 
