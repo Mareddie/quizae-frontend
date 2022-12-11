@@ -48,13 +48,15 @@
                                         <span aria-hidden="true">×</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <p>Do you really want to delete this group? Data about games and questions will be lost.</p>
-                                </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-outline-light">Save changes</button>
-                                </div>
+                                <form @submit.prevent="mutateGroup('delete', 'delete-group-modal')">
+                                    <div class="modal-body">
+                                        <p>Do you really want to delete this group? Data about games and questions will be lost.</p>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-light">Delete Group</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -69,7 +71,7 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <form @submit.prevent="editGroup">
+                            <form @submit.prevent="mutateGroup('update', 'edit-group-modal')">
                                 <div class="modal-body">
                                     <div class="alert alert-danger" v-if="groupData.error">
                                         {{groupData.error}}
@@ -109,19 +111,35 @@
 
 <script setup lang="ts">
 import {useFetch, useRequestHeaders} from "nuxt/app";
-import VueMultiselect from "vue-multiselect"
-import {GroupData} from "~/types/group-data";
+import VueMultiselect from "vue-multiselect/src"
+
+interface GroupDataInterface {
+    id: string|null,
+    name: string|null,
+    members: string[],
+    memberOptions: string[],
+    error: null,
+    operationInProgress: boolean,
+}
+
+interface OperationDirectionsInterface {
+    request: string,
+    opts: any,
+    eventName: string,
+    eventMessage: string
+}
 
 const emit = defineEmits<{
-    (e: 'groupUpdated', message: string): void
+    (e: 'groupUpdated', message: string): void,
+    (e: 'groupDeleted', message: string): void,
 }>();
 
 const {data: groups, refresh: groupsRefresh} = await useFetch(
     '/api/groups/my-own',
-    { key: undefined, headers: useRequestHeaders(['cookie']) }
+    { key: undefined, headers: useRequestHeaders(['cookie']) as any }
 );
 
-const groupData: GroupData = reactive({
+const groupData: GroupDataInterface = reactive({
     id: null,
     name: null,
     members: [],
@@ -180,18 +198,17 @@ const getMembershipUserEmails = (key: number, loadedGroups: any): string[] => {
     });
 };
 
-const editGroup = async () => {
+const mutateGroup = async (action: string, modalId: string) => {
     groupData.error = null;
     groupData.operationInProgress = true;
 
-    const response = await $fetch(`/api/groups/${groupData.id}`, {
-        method: 'PATCH',
-        body: {
-            users: groupData.members,
-            name: groupData.name,
-        },
-        headers: useRequestHeaders(['cookie']),
-    }).catch((err) => err.data);
+    const directions = determineOperationDirections(action);
+
+    if (directions === undefined) {
+        throw new Error(`Cannot mutate group - unknown action ${action}!`);
+    }
+
+    const response = await $fetch(directions.request, directions.opts).catch((err) => err.data) as any;
 
     groupData.operationInProgress = false;
 
@@ -201,15 +218,45 @@ const editGroup = async () => {
     }
 
     // We can close modal after successful edit
-    document.getElementById('close-edit-group-modal').click();
+    document.getElementById(modalId)?.click();
 
-    emit('groupUpdated', 'Group was successfully updated');
+    emit(directions.eventName as any, directions.eventMessage);
 
     return groupsRefresh();
 };
 
-// TODO: Logic for deleting groups
-// TODO: Logic for creating groups
+const determineOperationDirections = (action: string): OperationDirectionsInterface|undefined => {
+    if (action === 'update') {
+        return {
+            request: `/api/groups/${groupData.id}`,
+            opts: {
+                method: 'PATCH',
+                body: {
+                    users: groupData.members,
+                    name: groupData.name,
+                },
+                headers: useRequestHeaders(['cookie']),
+            },
+            eventName: 'groupUpdated',
+            eventMessage: 'Group was successfully updated',
+        }
+    }
+
+    if (action === 'delete') {
+        // TODO: Implement backend for this
+        return {
+            request: `/api/groups/${groupData.id}`,
+            opts: {
+                method: 'DELETE',
+                headers: useRequestHeaders(['cookie']),
+            },
+            eventName: 'groupDeleted',
+            eventMessage: 'Group was successfully deleted',
+        }
+    }
+
+    return undefined;
+};
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
