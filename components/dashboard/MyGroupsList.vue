@@ -2,7 +2,14 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h2 class="h5 m-0">My Groups</h2>
+                <h2 class="card-title">My Groups</h2>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm">
+                        <!-- TODO: add modal with form for group creation with backend and event with message -->
+                        <button class="btn btn-primary float-right">Create Group</button>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body table-responsive p-0">
