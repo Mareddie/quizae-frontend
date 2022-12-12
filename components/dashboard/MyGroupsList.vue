@@ -243,7 +243,6 @@ const determineOperationDirections = (action: string): OperationDirectionsInterf
     }
 
     if (action === 'delete') {
-        // TODO: Implement backend for this
         return {
             request: `/api/groups/${groupData.id}`,
             opts: {
