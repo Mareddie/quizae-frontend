@@ -7,7 +7,11 @@
                 <div class="card-tools">
                     <div class="input-group input-group-sm">
                         <!-- TODO: add modal with form for group creation with backend and event with message -->
-                        <button class="btn btn-primary float-right">Create Group</button>
+                        <button class="btn btn-primary float-right"
+                                data-toggle="modal"
+                                data-target="#cu-group-modal" @click="prefillGroupFormModal('create')">
+                            Create Group
+                        </button>
                     </div>
                 </div>
             </div>
@@ -29,15 +33,15 @@
                             <button type="button"
                                     class="btn btn-sm btn-primary"
                                     data-toggle="modal"
-                                    data-target="#edit-group-modal"
-                                    @click="prefillGroupFormModal(key, 'update')">
+                                    data-target="#cu-group-modal"
+                                    @click="prefillGroupFormModal('update', key)">
                                 Edit Group
                             </button>
                             <button type="button"
                                     class="btn btn-sm btn-danger mx-1"
                                     data-toggle="modal"
                                     data-target="#delete-group-modal"
-                                    @click="prefillGroupFormModal(key, 'delete')">
+                                    @click="prefillGroupFormModal('delete', key)">
                                 Delete
                             </button>
                         </td>
@@ -69,16 +73,16 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="edit-group-modal" aria-hidden="true">
+                <div class="modal fade" id="cu-group-modal" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title">Edit Group</h4>
+                                <h4 class="modal-title">{{groupData.modalHeading}}</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <form @submit.prevent="mutateGroup('update', 'edit-group-modal')">
+                            <form @submit.prevent="mutateGroup('update', 'cu-group-modal')">
                                 <div class="modal-body">
                                     <div class="alert alert-danger" v-if="groupData.error">
                                         {{groupData.error}}
@@ -103,7 +107,7 @@
                                 </div>
 
                                 <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="close-edit-group-modal">Close</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="close-cu-group-modal">Close</button>
                                     <button type="submit" class="btn btn-primary" v-if="!groupData.operationInProgress">Save</button>
                                     <button type="button" class="btn btn-primary disabled" v-if="groupData.operationInProgress">Saving...</button>
                                 </div>
@@ -121,6 +125,8 @@ import {useFetch, useRequestHeaders} from "nuxt/app";
 import VueMultiselect from "vue-multiselect/src"
 
 interface GroupDataInterface {
+    modalHeading: string|null,
+    action: string|null,
     id: string|null,
     name: string|null,
     members: string[],
@@ -139,6 +145,7 @@ interface OperationDirectionsInterface {
 const emit = defineEmits<{
     (e: 'groupUpdated', message: string): void,
     (e: 'groupDeleted', message: string): void,
+    (e: 'groupCreated', message: string): void,
 }>();
 
 const {data: groups, refresh: groupsRefresh} = await useFetch(
@@ -147,6 +154,8 @@ const {data: groups, refresh: groupsRefresh} = await useFetch(
 );
 
 const groupData: GroupDataInterface = reactive({
+    modalHeading: null,
+    action: null,
     id: null,
     name: null,
     members: [],
@@ -165,15 +174,30 @@ const groupMembers = (key: number): string|null => {
     return getMembershipUserEmails(key, loadedGroups).join(', ');
 };
 
-const prefillGroupFormModal = (key: number, action: string) => {
+const prefillGroupFormModal = (action: string, key?: number) => {
+    groupData.error = null;
+    groupData.operationInProgress = false;
+    groupData.action = action;
+
+    switch (action) {
+        case 'create':
+            groupData.modalHeading = 'Create Group';
+            break;
+        case 'update':
+            groupData.modalHeading = 'Update Group';
+            break;
+    }
+
+    if (key === undefined) {
+        return;
+    }
+
     const {value: loadedGroups} = groups;
 
     if (!loadedGroups || !loadedGroups.hasOwnProperty(key)) {
         return;
     }
 
-    groupData.error = null;
-    groupData.operationInProgress = false;
     groupData.name = loadedGroups[key]['name'];
     groupData.id = loadedGroups[key]['id'];
 
@@ -224,7 +248,7 @@ const mutateGroup = async (action: string, modalId: string) => {
         return;
     }
 
-    // We can close modal after successful edit
+    // We can close modal after successful action
     document.getElementById(modalId)?.click();
 
     emit(directions.eventName as any, directions.eventMessage);
@@ -233,6 +257,22 @@ const mutateGroup = async (action: string, modalId: string) => {
 };
 
 const determineOperationDirections = (action: string): OperationDirectionsInterface|undefined => {
+    if (action === 'create') {
+        return {
+            request: '/api/groups/create',
+            opts: {
+                method: 'POST',
+                body: {
+                    users: groupData.members,
+                    name: groupData.name,
+                },
+                headers: useRequestHeaders(['cookie']),
+            },
+            eventName: 'groupCreated',
+            eventMessage: 'Group was successfully created',
+        }
+    }
+
     if (action === 'update') {
         return {
             request: `/api/groups/${groupData.id}`,
