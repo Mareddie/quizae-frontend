@@ -10,6 +10,7 @@
             <DashboardMyGamesList />
             <DashboardMyGroupMembershipsList />
             <DashboardMyGroupsList
+                @group-created="(message) => updateSuccessMessage(message)"
                 @group-updated="(message) => updateSuccessMessage(message)"
                 @group-deleted="(message) => updateSuccessMessage(message)" />
             <div class="col-lg-12">

@@ -82,7 +82,7 @@
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <form @submit.prevent="mutateGroup('update', 'cu-group-modal')">
+                            <form @submit.prevent="mutateGroup(groupData.action, 'cu-group-modal')">
                                 <div class="modal-body">
                                     <div class="alert alert-danger" v-if="groupData.error">
                                         {{groupData.error}}
@@ -175,6 +175,10 @@ const groupMembers = (key: number): string|null => {
 };
 
 const prefillGroupFormModal = (action: string, key?: number) => {
+    groupData.id = null;
+    groupData.name = null;
+    groupData.members = [];
+    groupData.memberOptions = [];
     groupData.error = null;
     groupData.operationInProgress = false;
     groupData.action = action;
@@ -244,7 +248,7 @@ const mutateGroup = async (action: string, modalId: string) => {
     groupData.operationInProgress = false;
 
     if (response.error) {
-        groupData.error = response.error;
+        groupData.error = response.message;
         return;
     }
 
