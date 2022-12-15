@@ -30,6 +30,15 @@ router.delete('/:groupId', eventHandler(async (event) => {
     ).catch((err) => processError(event, err));
 }));
 
+router.get('/my-memberships', eventHandler(async (event) => {
+    return performRequest(
+        '/groups?filter=myMemberships',
+        'GET',
+        undefined,
+        getCookie(event, 'accessToken')
+    ).catch((err) => processError(event, err));
+}));
+
 router.get('/my-own', eventHandler(async (event) => {
     return performRequest(
         '/groups?filter=myOwn',

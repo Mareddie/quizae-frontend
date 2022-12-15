@@ -6,7 +6,6 @@
 
                 <div class="card-tools">
                     <div class="input-group input-group-sm">
-                        <!-- TODO: add modal with form for group creation with backend and event with message -->
                         <button class="btn btn-primary float-right"
                                 data-toggle="modal"
                                 data-target="#cu-group-modal" @click="prefillGroupFormModal('create')">
@@ -28,7 +27,7 @@
                     <tbody>
                     <tr v-for="(group, key) in groups">
                         <td>{{group.name}}</td>
-                        <td>{{groupMembers(key)}}</td>
+                        <td>{{getGroupMembers(useClone(group))}}</td>
                         <td>
                             <button type="button"
                                     class="btn btn-sm btn-primary"
@@ -122,25 +121,8 @@
 
 <script setup lang="ts">
 import {useFetch, useRequestHeaders} from "nuxt/app";
-import VueMultiselect from "vue-multiselect/src"
-
-interface GroupDataInterface {
-    modalHeading: string|null,
-    action: string|null,
-    id: string|null,
-    name: string|null,
-    members: string[],
-    memberOptions: string[],
-    error: null,
-    operationInProgress: boolean,
-}
-
-interface OperationDirectionsInterface {
-    request: string,
-    opts: any,
-    eventName: string,
-    eventMessage: string
-}
+import VueMultiselect from "vue-multiselect/src";
+import {getMembershipUserEmails, getGroupMembers, GroupDataInterface, OperationDirectionsInterface} from "~/composables/groupUtils";
 
 const emit = defineEmits<{
     (e: 'groupUpdated', message: string): void,
@@ -163,16 +145,6 @@ const groupData: GroupDataInterface = reactive({
     error: null,
     operationInProgress: false,
 });
-
-const groupMembers = (key: number): string|null => {
-    const {value: loadedGroups} = groups;
-
-    if (!loadedGroups) {
-        return null;
-    }
-
-    return getMembershipUserEmails(key, loadedGroups).join(', ');
-};
 
 const prefillGroupFormModal = (action: string, key?: number) => {
     groupData.id = null;
@@ -206,8 +178,8 @@ const prefillGroupFormModal = (action: string, key?: number) => {
     groupData.id = loadedGroups[key]['id'];
 
     if (action === 'update') {
-        groupData.members = useClone(getMembershipUserEmails(key, loadedGroups));
-        groupData.memberOptions = useClone(getMembershipUserEmails(key, loadedGroups));
+        groupData.members = useClone(getMembershipUserEmails(loadedGroups[key]));
+        groupData.memberOptions = useClone(getMembershipUserEmails(loadedGroups[key]));
     }
 };
 
@@ -225,12 +197,6 @@ const addGroupMember = (newMember: string) => {
 
     groupData.members.push(validated[0]);
     groupData.memberOptions.push(validated[0]);
-};
-
-const getMembershipUserEmails = (key: number, loadedGroups: any): string[] => {
-    return loadedGroups[key]['userMemberships'].map((membership: any) => {
-        return membership.user?.email;
-    });
 };
 
 const mutateGroup = async (action: string, modalId: string) => {

@@ -16,17 +16,53 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>In Circles</td>
-                        <td>John, Jane, Eddie</td>
-                        <td>John</td>
+                    <tr v-for="(group, key) in groups">
+                        <td>{{group.name}}</td>
+                        <td>{{getGroupMembers(useClone(group))}}</td>
+                        <td>{{group.owner.email}}</td>
                         <td>
-                            <a href="#" role="button" class="btn btn-sm btn-danger mx-1">Leave</a>
+                            <button class="btn btn-sm btn-danger mx-1"
+                                    data-toggle="modal"
+                                    data-target="#leave-group-modal">Leave</button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+
+                <div class="modal fade" id="leave-group-modal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-content bg-danger">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Are You Sure About That</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <form @submit.prevent="">
+                                    <div class="modal-body">
+                                        <p>Do you really want to leave this group?</p>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-light">Leave Group</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import {useFetch, useRequestHeaders} from "nuxt/app";
+import {getMembershipUserEmails, getGroupMembers} from "~/composables/groupUtils";
+
+const {data: groups, refresh: groupsRefresh} = await useFetch(
+    '/api/groups/my-memberships',
+    { key: undefined, headers: useRequestHeaders(['cookie']) as any }
+);
+</script>
