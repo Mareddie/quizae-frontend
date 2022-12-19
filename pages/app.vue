@@ -1,21 +1,38 @@
 <template>
-    <NuxtLayout name="auth">
-        <div class="login-logo">
-            <a href="/"><b>Quizae</b></a>
-        </div>
+    <NuxtLayout name="main">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-default-success" v-if="successMessage">
+                    {{successMessage}}
+                </div>
+            </div>
 
-        <div class="card">
-            <div class="card-body login-card-body">
-                <h2>Hello there, {{data['firstName']}}!</h2>
+            <DashboardMyGamesList />
 
-                <p>
-                    First Name: {{data['firstName']}} <br>
-                    Last Name: {{data['lastName']}} <br>
-                    Email: {{data['email']}} <br>
-                    ID: {{data['id']}} <br>
-                </p>
+            <DashboardMyGroupMembershipsList
+                @group-left="(message) => updateSuccessMessage(message)" />
 
-                <a href="#" class="btn btn-warning">Log Out</a>
+            <DashboardMyGroupsList
+                @group-created="(message) => updateSuccessMessage(message)"
+                @group-updated="(message) => updateSuccessMessage(message)"
+                @group-deleted="(message) => updateSuccessMessage(message)" />
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h5 m-0">Hello there, {{profile['firstName']}}!</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="card-text">
+                            First Name: {{profile['firstName']}} <br>
+                            Last Name: {{profile['lastName']}} <br>
+                            Email: {{profile['email']}} <br>
+                            ID: {{profile['id']}} <br>
+                        </p>
+
+                        <a href="/logout" role="button" class="btn btn-warning">Log Out</a>
+                    </div>
+                </div>
             </div>
         </div>
     </NuxtLayout>
@@ -23,12 +40,27 @@
 
 <script setup lang="ts">
 import {useHead, useFetch, useRequestHeaders} from "nuxt/app";
+import {useState} from "#app";
 
 useHead({
-    title: 'Home | Quizae',
+    title: 'Dashboard | Quizae',
 });
 
-const headers = useRequestHeaders(['cookie']) as any;
+useState('pageName').value = 'Dashboard';
 
-const { data } = await useFetch('/api/profile', { headers })
+const { data: profile } = await useFetch('/api/users/profile', {
+    pick: ['firstName', 'lastName', 'email', 'id'] as any,
+    headers: useRequestHeaders(['cookie']) as any,
+})
+
+const successMessage = ref<string|null>(null);
+
+const updateSuccessMessage = (message: string) => {
+    successMessage.value = message;
+
+    setTimeout(
+        () => successMessage.value = null,
+        3000
+    );
+}
 </script>

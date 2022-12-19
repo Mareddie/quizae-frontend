@@ -58,7 +58,7 @@ async function authenticate() {
     // We can reset the error on multiple attempts
     authError.value = null;
 
-    const response = await $fetch('/api/login', {
+    const response = await $fetch('/api/users/login', {
         method: 'POST',
         body: {
             email: email.value,
