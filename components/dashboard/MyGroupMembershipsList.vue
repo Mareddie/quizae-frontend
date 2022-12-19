@@ -6,7 +6,7 @@
             </div>
 
             <div class="card-body table-responsive p-0">
-                <table class="table table-head-fixed text-nowrap">
+                <table class="table table-head-fixed text-nowrap" v-if="groups.length > 0">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -28,6 +28,8 @@
                     </tr>
                     </tbody>
                 </table>
+
+                <div class="card-body" v-else>You are not a member of any group</div>
 
                 <div class="modal fade" id="leave-group-modal" aria-hidden="true">
                     <div class="modal-dialog">
