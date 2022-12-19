@@ -62,6 +62,10 @@
                                 </div>
                                 <form @submit.prevent="mutateGroup('delete', 'delete-group-modal')">
                                     <div class="modal-body">
+                                        <div class="alert alert-danger" v-if="groupData.error">
+                                            {{groupData.error}}
+                                        </div>
+
                                         <p>Do you really want to delete this group? Data about games and questions will be lost.</p>
                                     </div>
                                     <div class="modal-footer justify-content-between">
