@@ -3,6 +3,7 @@ import {defineEventHandler, getCookie, sendRedirect} from "h3";
 const unprotectedRoutes = [
     '/',
     '/api/users/login',
+    '/logout',
 ];
 
 export default defineEventHandler((event) => {

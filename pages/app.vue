@@ -30,7 +30,7 @@
                             ID: {{profile['id']}} <br>
                         </p>
 
-                        <a href="#" class="btn btn-warning">Log Out</a>
+                        <a href="/logout" role="button" class="btn btn-warning">Log Out</a>
                     </div>
                 </div>
             </div>
@@ -50,12 +50,12 @@ useState('pageName').value = 'Dashboard';
 
 const { data: profile } = await useFetch('/api/users/profile', {
     pick: ['firstName', 'lastName', 'email', 'id'] as any,
-    headers: useRequestHeaders(['cookie'])
+    headers: useRequestHeaders(['cookie']) as any,
 })
 
 const successMessage = ref<string|null>(null);
 
-const updateSuccessMessage = (message) => {
+const updateSuccessMessage = (message: string) => {
     successMessage.value = message;
 
     setTimeout(
