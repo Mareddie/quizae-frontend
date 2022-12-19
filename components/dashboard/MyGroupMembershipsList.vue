@@ -5,6 +5,12 @@
                 <h2 class="h5 m-0">My Group Memberships</h2>
             </div>
 
+            <div class="card-body" v-if="error">
+                <div class="alert alert-danger">
+                    {{error}}
+                </div>
+            </div>
+
             <div class="card-body table-responsive p-0">
                 <table class="table table-head-fixed text-nowrap" v-if="groups.length > 0">
                     <thead>
@@ -23,13 +29,16 @@
                         <td>
                             <button class="btn btn-sm btn-danger mx-1"
                                     data-toggle="modal"
-                                    data-target="#leave-group-modal">Leave</button>
+                                    data-target="#leave-group-modal"
+                                    @click="leaveCandidate = group.id">
+                                Leave
+                            </button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
-                <div class="card-body" v-else>You are not a member of any group</div>
+                <div class="card-body" v-else>You are not a member of any group.</div>
 
                 <div class="modal fade" id="leave-group-modal" aria-hidden="true">
                     <div class="modal-dialog">
@@ -47,7 +56,8 @@
                                     </div>
                                     <div class="modal-footer justify-content-between">
                                         <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-outline-light">Leave Group</button>
+                                        <button type="submit" class="btn btn-outline-light" @click="leaveGroup" v-if="leaveInProgress === false">Leave Group</button>
+                                        <button type="submit" class="btn btn-outline-light disabled" @click="leaveGroup" v-else>Leaving...</button>
                                     </div>
                                 </form>
                             </div>
@@ -67,4 +77,36 @@ const {data: groups, refresh: groupsRefresh} = await useFetch(
     '/api/groups/my-memberships',
     { key: undefined, headers: useRequestHeaders(['cookie']) as any }
 );
+
+const emit = defineEmits<{
+    (e: 'groupLeft', message: string): void,
+}>();
+
+const leaveCandidate = ref<string|null>(null);
+const leaveInProgress = ref<boolean>(false);
+const error = ref<string|null>(null);
+
+const leaveGroup = async () => {
+    leaveInProgress.value = true;
+
+    const response = await $fetch(
+        `/api/groups/${leaveCandidate.value}/leave`,
+        {
+            method: 'PATCH',
+            headers: useRequestHeaders(['cookie']) as any,
+        }).catch((err) => err.data) as any;
+
+    leaveInProgress.value = false;
+
+    document.getElementById('leave-group-modal')?.click();
+
+    if (response.error) {
+        error.value = response.message;
+        return;
+    }
+
+    emit('groupLeft', 'You successfully left the group');
+
+    return groupsRefresh();
+};
 </script>

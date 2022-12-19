@@ -21,6 +21,15 @@ router.patch('/:groupId', eventHandler(async (event) => {
     ).catch((err) => processError(event, err));
 }));
 
+router.patch('/:groupId/leave', eventHandler(async (event) => {
+    return performRequest(
+        `/groups/${event.context.params.groupId}/leave`,
+        'PATCH',
+        undefined,
+        getCookie(event, 'accessToken')
+    ).catch((err) => processError(event, err));
+}));
+
 router.delete('/:groupId', eventHandler(async (event) => {
     return performRequest(
         `/groups/${event.context.params.groupId}`,

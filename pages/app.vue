@@ -8,7 +8,10 @@
             </div>
 
             <DashboardMyGamesList />
-            <DashboardMyGroupMembershipsList />
+
+            <DashboardMyGroupMembershipsList
+                @group-left="(message) => updateSuccessMessage(message)" />
+
             <DashboardMyGroupsList
                 @group-created="(message) => updateSuccessMessage(message)"
                 @group-updated="(message) => updateSuccessMessage(message)"
