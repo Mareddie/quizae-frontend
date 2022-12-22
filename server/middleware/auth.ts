@@ -15,6 +15,6 @@ export default defineEventHandler((event) => {
 
     // If we have access token cookie, and we're on login page, we can bypass the process
     if(event.node.req.url === '/' && cookie) {
-        return sendRedirect(event, '/app', 302);
+        return sendRedirect(event, '/dashboard', 302);
     }
 })

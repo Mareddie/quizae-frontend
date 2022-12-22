@@ -70,7 +70,7 @@ async function authenticate() {
     });
 
     if (response !== undefined) {
-        return navigateTo('/app');
+        return navigateTo('/dashboard');
     }
 }
 </script>
