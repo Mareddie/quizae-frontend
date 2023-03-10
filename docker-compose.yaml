@@ -1,0 +1,30 @@
+# FOR DEVELOPMENT PURPOSES ONLY!
+# Server infrastructure has been moved to a separate project
+
+version: "3.8"
+
+services:
+    frontend:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+            target: development
+        container_name: quizae-frontend
+        restart: unless-stopped
+        volumes:
+            - ./:/usr/src/app:rw
+        networks:
+            - quizae_traefik
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.frontend.entrypoints=websecure
+            - traefik.http.routers.frontend.rule=Host(`web.quizae.wtf`)
+            - traefik.http.routers.frontend.tls=true
+        environment:
+            APP_ENV: dev
+        extra_hosts:
+            -   'api.quizae.wtf:host-gateway'
+
+networks:
+    quizae_traefik:
+        external: true
