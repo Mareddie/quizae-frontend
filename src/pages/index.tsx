@@ -1,4 +1,7 @@
 import Head from 'next/head'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 export default function Home() {
   return (
@@ -10,7 +13,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-          <h1>Quizae</h1>
+          <Container className="mt-3">
+              <Row>
+                  <Col>
+                      <h1 className="text-center">Quizae</h1>
+                  </Col>
+              </Row>
+          </Container>
       </main>
     </>
   )
