@@ -6,7 +6,6 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-
 export default function Home() {
     return (
         <>
@@ -17,7 +16,7 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
             <Container>
-                <Row className={'justify-content-center align-items-center mt-5'}>
+                <Row className="justify-content-center align-items-center mt-5">
                     <Col md={6}>
                         <Card>
                             <Card.Header as="h2" className="text-center">Quizae</Card.Header>
@@ -33,6 +32,7 @@ export default function Home() {
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control type="password" />
                                     </Form.Group>
+
                                     <Button variant="primary" type="submit">
                                         Submit
                                     </Button>
