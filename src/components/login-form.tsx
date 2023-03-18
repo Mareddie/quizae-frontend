@@ -2,8 +2,29 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import useForm from "@/hooks/use-form";
+import {signIn, signOut, useSession} from "next-auth/react";
 
 export default function LoginForm() {
+    const { data: session } = useSession();
+
+    if (session) {
+        return (
+            <>
+                Signed in!
+                <button onClick={() => signOut()}>Sign out</button>
+            </>
+        );
+    }
+
+    return (
+        <>
+            Not signed in <br />
+            <button onClick={() => signIn()}>Sign in</button>
+        </>
+    );
+
+
+
     const { formObject: loginCredentials, onChangeInput, onSubmitForm } = useForm({
         email: '',
         password: '',

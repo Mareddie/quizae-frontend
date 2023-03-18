@@ -1,9 +1,12 @@
-import Head from 'next/head'
-import Col from 'react-bootstrap/Col'
-import LoginForm from "@/components/login-form";
-import { NextPageWithLayout } from './_app'
-import { ReactElement } from "react";
-import AuthLayout from "@/layouts/auth-layout";
+// Components
+import Head from 'next/head';
+import Col from 'react-bootstrap/Col';
+import LoginForm from '@/components/login-form';
+import AuthLayout from '@/layouts/auth-layout';
+
+// Types and Interfaces
+import { NextPageWithLayout } from './_app';
+import { ReactElement } from 'react';
 
 
 const LoginPage: NextPageWithLayout = () => {
