@@ -25,6 +25,8 @@ services:
             BACKEND_URL: 'https://api.quizae.wtf'
             NEXTAUTH_SECRET: 'GKwX1HexwWDde6x8QGyRUhhJka3SNgdesfl77YRZD+4='
             NEXTAUTH_URL: 'https://web.quizae.wtf'
+            # FOR LOCAL ENVIRONMENT ONLY - we don't have to deal with weak TLS on localhost right now
+            NODE_TLS_REJECT_UNAUTHORIZED: '0'
         extra_hosts:
             -   'api.quizae.wtf:host-gateway'
 
