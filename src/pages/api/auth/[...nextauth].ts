@@ -12,7 +12,12 @@ type AuthResponse = {
     accessToken: string,
 }
 
-type AuthUser = UserDetailResponse & AuthResponse;
+type AuthUser = {
+    id: string,
+    accessToken: string,
+    email: string,
+    name: string,
+};
 
 export const authOptions = {
     // Configure one or more authentication providers
@@ -26,9 +31,24 @@ export const authOptions = {
             },
             async authorize(credentials, req): Promise<User|null> {
                 return await performAuthRequest(JSON.stringify(credentials)) as User;
-            }
+            },
         }),
     ],
+    callbacks: {
+        async jwt({token, user}) {
+            if (user) {
+                token.id = user.id;
+                token.accessToken = user.accessToken;
+            }
+
+            return token
+        },
+        async session({session, token}) {
+            session.accessToken = token.accessToken;
+
+            return session;
+        }
+    }
 }
 
 export default NextAuth(authOptions);
@@ -54,7 +74,12 @@ const performAuthRequest = async (jsonBody: string): Promise<AuthUser|null> => {
         return null;
     }
 
-    return { ...authData, ...userData };
+    return {
+        id: userData.id,
+        accessToken: authData.accessToken,
+        email: userData.email,
+        name: `${userData.firstName} ${userData.lastName}`,
+    };
 }
 
 const getUserDetail = async (accessToken: string): Promise<UserDetailResponse|null> => {

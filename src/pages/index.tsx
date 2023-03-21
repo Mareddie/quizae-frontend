@@ -8,6 +8,9 @@ import AuthLayout from '@/layouts/auth-layout';
 import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
 
+import { authOptions } from '@/pages/api/auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
+
 
 const LoginPage: NextPageWithLayout = () => {
     return (
@@ -31,6 +34,13 @@ LoginPage.getLayout = (page: ReactElement) => {
             {page}
         </AuthLayout>
     )
+}
+
+export async function getServerSideProps(context) {
+    // TODO: use middleware
+    const session = await getServerSession(context.req, context.res, authOptions as any);
+
+    return { props: {}};
 }
 
 export default LoginPage
