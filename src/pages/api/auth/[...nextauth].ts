@@ -20,8 +20,6 @@ type AuthUser = {
 };
 
 export const authOptions = {
-    // Configure one or more authentication providers
-    // TODO: we can skip token serialization and deserialization, as we already do it on backend
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -48,7 +46,10 @@ export const authOptions = {
 
             return session;
         }
-    }
+    },
+    pages: {
+        signIn: '/auth/login',
+    },
 }
 
 export default NextAuth(authOptions);
