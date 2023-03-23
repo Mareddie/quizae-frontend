@@ -1,7 +1,6 @@
 // Components
 import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
-import LoginForm from '@/components/login-form';
 import AuthLayout from '@/layouts/auth-layout';
 
 // Types and Interfaces
@@ -12,23 +11,21 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { getServerSession } from "next-auth/next"
 
 
-const LoginPage: NextPageWithLayout = () => {
+const DashboardPage: NextPageWithLayout = () => {
     return (
         <>
             <Head>
-                <title>Quizae</title>
-                <meta name="description" content="A Trivia App"/>
-                <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <link rel="icon" href="/favicon.ico"/>
+                <title key="title">Home | Quizae</title>
             </Head>
             <Col md={6}>
-                <LoginForm />
+                <p>You should be logged in to see this page!</p>
             </Col>
         </>
     )
 }
 
-LoginPage.getLayout = (page: ReactElement) => {
+DashboardPage.getLayout = (page: ReactElement) => {
+    // TODO: Create a generic app layout
     return (
         <AuthLayout>
             {page}
@@ -43,4 +40,4 @@ export async function getServerSideProps(context) {
     return { props: {}};
 }
 
-export default LoginPage
+export default DashboardPage
