@@ -2,11 +2,12 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import useForm from "@/hooks/use-form";
-import {signIn, signOut, useSession} from "next-auth/react";
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getCsrfToken } from "next-auth/react";
 import {ReactElement} from "react";
 import LoginError from "@/components/login-error";
 
-export default function LoginForm(): ReactElement {
+export default function LoginForm({ csrfToken }): ReactElement {
     const { formObject: loginCredentials, onChangeInput, onSubmitForm } = useForm({
         email: '',
         password: '',
@@ -18,7 +19,12 @@ export default function LoginForm(): ReactElement {
             <Card.Title className="text-center mt-3">Log In</Card.Title>
             <Card.Body>
                 <LoginError />
-                <Form onSubmit={onSubmitForm}>
+                <Form action="/api/auth/callback/credentials" method="POST">
+                    <Form.Control
+                        type="hidden"
+                        name="csrfToken"
+                        defaultValue={csrfToken} />
+
                     <Form.Group className="mb-3" controlId="email">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
@@ -44,4 +50,12 @@ export default function LoginForm(): ReactElement {
             </Card.Body>
         </Card>
     )
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    return {
+        props: {
+            csrfToken: await getCsrfToken(context),
+        },
+    }
 }
