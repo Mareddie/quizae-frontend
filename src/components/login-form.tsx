@@ -8,7 +8,7 @@ import {ReactElement} from "react";
 import LoginError from "@/components/login-error";
 
 export default function LoginForm({ csrfToken }): ReactElement {
-    const { formObject: loginCredentials, onChangeInput, onSubmitForm } = useForm({
+    const { formObject: loginCredentials, onChangeInput } = useForm({
         email: '',
         password: '',
     });

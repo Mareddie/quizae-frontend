@@ -4,8 +4,6 @@ import Col from "react-bootstrap/Col";
 import LoginForm from "@/components/login-form";
 import {ReactElement} from "react";
 import AuthLayout from "@/layouts/auth-layout";
-import {getServerSession} from "next-auth/next";
-import {authOptions} from "@/pages/api/auth/[...nextauth]";
 import {GetServerSidePropsContext, InferGetServerSidePropsType} from "next";
 import {getCsrfToken} from "next-auth/react";
 
@@ -30,10 +28,10 @@ LoginPage.getLayout = (page: ReactElement) => {
     )
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
         props: {
-            csrfToken: '',
+            csrfToken: await getCsrfToken(context) ?? null,
         }
     };
 }

@@ -29,6 +29,7 @@ services:
             NODE_TLS_REJECT_UNAUTHORIZED: '0'
         extra_hosts:
             -   'api.quizae.wtf:host-gateway'
+            -   'web.quizae.wtf:host-gateway'
 
 networks:
     quizae_traefik:
