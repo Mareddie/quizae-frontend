@@ -1,14 +1,10 @@
-// Components
 import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
+import Button from "react-bootstrap/Button";
 import AuthLayout from '@/layouts/auth-layout';
-
-// Types and Interfaces
+import { signOut } from "next-auth/react";
 import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
-
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { getServerSession } from "next-auth/next"
 
 
 const DashboardPage: NextPageWithLayout = () => {
@@ -19,6 +15,7 @@ const DashboardPage: NextPageWithLayout = () => {
             </Head>
             <Col md={6}>
                 <p>You should be logged in to see this page!</p>
+                <Button onClick={() => signOut()}>Sign Out</Button>
             </Col>
         </>
     )
@@ -31,13 +28,6 @@ DashboardPage.getLayout = (page: ReactElement) => {
             {page}
         </AuthLayout>
     )
-}
-
-export async function getServerSideProps(context) {
-    // TODO: use middleware
-    const session = await getServerSession(context.req, context.res, authOptions as any);
-
-    return { props: {}};
 }
 
 export default DashboardPage
