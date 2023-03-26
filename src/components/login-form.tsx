@@ -28,6 +28,7 @@ export default function LoginForm({ csrfToken }): ReactElement {
                     <Form.Group className="mb-3" controlId="email">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
+                            required
                             type="email"
                             name="email"
                             onChange={onChangeInput}
@@ -37,6 +38,7 @@ export default function LoginForm({ csrfToken }): ReactElement {
                     <Form.Group className="mb-3" controlId="password">
                         <Form.Label>Password</Form.Label>
                         <Form.Control
+                            required
                             type="password"
                             name="password"
                             onChange={onChangeInput}
