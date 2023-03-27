@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { SessionProvider } from 'next-auth/react'
-
 import type { AppProps } from 'next/app'
 import type { NextPage } from 'next'
 import type { ReactElement, ReactNode } from 'react'
@@ -15,9 +14,17 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+function getPageWithDefaultLayout(page: ReactElement): ReactNode {
+    return (
+        <BaseAppLayout>
+            {page}
+        </BaseAppLayout>
+    );
+}
+
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => page);
+  const getLayout = Component.getLayout ?? getPageWithDefaultLayout;
 
   return getLayout(
       <SessionProvider session={session}>
@@ -28,9 +35,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
               <meta name="robots" content="noindex,nofollow" key="metaRobots"/>
               <link rel="icon" href="/favicon.ico" key="favicon"/>
           </Head>
-          <BaseAppLayout>
-              <Component {...pageProps} />
-          </BaseAppLayout>
+          <Component {...pageProps} />
       </SessionProvider>
   );
 }

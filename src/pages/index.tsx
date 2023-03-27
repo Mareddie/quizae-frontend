@@ -1,10 +1,8 @@
 import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button";
-import AuthLayout from '@/layouts/auth-layout';
 import { signOut } from "next-auth/react";
 import { NextPageWithLayout } from './_app';
-import { ReactElement } from 'react';
 
 
 const DashboardPage: NextPageWithLayout = () => {
