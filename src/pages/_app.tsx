@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app'
 import type { NextPage } from 'next'
 import type { ReactElement, ReactNode } from 'react'
 import Head from "next/head";
+import BaseAppLayout from "@/layouts/base-app-layout";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -27,7 +28,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
               <meta name="robots" content="noindex,nofollow" key="metaRobots"/>
               <link rel="icon" href="/favicon.ico" key="favicon"/>
           </Head>
-          <Component {...pageProps} />
+          <BaseAppLayout>
+              <Component {...pageProps} />
+          </BaseAppLayout>
       </SessionProvider>
   );
 }

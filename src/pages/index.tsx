@@ -21,13 +21,4 @@ const DashboardPage: NextPageWithLayout = () => {
     )
 }
 
-DashboardPage.getLayout = (page: ReactElement) => {
-    // TODO: Create a generic app layout
-    return (
-        <AuthLayout>
-            {page}
-        </AuthLayout>
-    )
-}
-
 export default DashboardPage
