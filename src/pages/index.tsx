@@ -1,9 +1,6 @@
 import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
-import Button from "react-bootstrap/Button";
-import { signOut } from "next-auth/react";
 import { NextPageWithLayout } from './_app';
-
 
 const DashboardPage: NextPageWithLayout = () => {
     return (
@@ -12,8 +9,7 @@ const DashboardPage: NextPageWithLayout = () => {
                 <title key="title">Home | Quizae</title>
             </Head>
             <Col md={6}>
-                <p>You should be logged in to see this page!</p>
-                <Button onClick={() => signOut()}>Sign Out</Button>
+                <p>Welcome!</p>
             </Col>
         </>
     )

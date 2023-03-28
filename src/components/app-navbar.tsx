@@ -3,10 +3,10 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Link from "next/link";
-import {signOut} from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
 
 const AppNavbar: FunctionComponent = () => {
-    // TODO: pass authenticated user name from server session to this component
+    const {data: session } = useSession();
 
     return (
         <Navbar bg="light" expand="lg">
@@ -20,9 +20,13 @@ const AppNavbar: FunctionComponent = () => {
                         </Link>
                     </Nav>
 
-                    <Navbar.Text>
-                        Signed in as: Some User <a href="#" role="button" onClick={() => signOut()}>Log Out</a>
-                    </Navbar.Text>
+                    {
+                        session &&
+                        <Navbar.Text>
+                            Signed in as {session.user?.name} ({session.user?.email})&nbsp;
+                            <a href="#" role="button" onClick={() => signOut()}>Log Out</a>
+                        </Navbar.Text>
+                    }
                 </Navbar.Collapse>
             </Container>
         </Navbar>

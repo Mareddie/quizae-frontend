@@ -2,7 +2,6 @@ import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
 import { NextPageWithLayout } from './_app';
 
-
 const TestPage: NextPageWithLayout = () => {
     return (
         <>

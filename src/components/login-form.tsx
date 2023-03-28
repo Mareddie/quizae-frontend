@@ -2,8 +2,6 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import useForm from "@/hooks/use-form";
-import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getCsrfToken } from "next-auth/react";
 import {ReactElement} from "react";
 import LoginError from "@/components/login-error";
 
@@ -52,12 +50,4 @@ export default function LoginForm({ csrfToken }): ReactElement {
             </Card.Body>
         </Card>
     )
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    return {
-        props: {
-            csrfToken: await getCsrfToken(context),
-        },
-    }
 }
