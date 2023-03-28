@@ -25,7 +25,7 @@ LoginPage.getLayout = (page: ReactElement) => {
         <AuthLayout>
             {page}
         </AuthLayout>
-    )
+    );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
