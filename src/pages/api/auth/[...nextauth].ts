@@ -41,11 +41,6 @@ export const authOptions = {
 
             return token
         },
-        async session({session, token}) {
-            session.accessToken = token.accessToken;
-
-            return session;
-        }
     },
     pages: {
         signIn: '/auth/login',
