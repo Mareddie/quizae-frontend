@@ -1,8 +1,24 @@
 import Head from 'next/head';
 import Col from 'react-bootstrap/Col';
 import { NextPageWithLayout } from './_app';
+import {useQuery} from "@tanstack/react-query";
 
-const DashboardPage: NextPageWithLayout = () => {
+const fetchHomepageData = async () => {
+    const response = await fetch('/api/home-data');
+
+    if (! response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+}
+
+const HomePage: NextPageWithLayout = () => {
+    const homepageQuery = useQuery({
+        queryKey: ['homepageData'],
+        queryFn: fetchHomepageData,
+    });
+
     return (
         <>
             <Head>
@@ -15,4 +31,4 @@ const DashboardPage: NextPageWithLayout = () => {
     )
 }
 
-export default DashboardPage
+export default HomePage

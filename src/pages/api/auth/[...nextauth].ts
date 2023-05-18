@@ -1,5 +1,6 @@
 import NextAuth, {User} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials';
+import {JWT} from "next-auth/jwt";
 
 type UserDetailResponse = {
     id: string,
@@ -12,13 +13,6 @@ type AuthResponse = {
     accessToken: string,
 }
 
-type AuthUser = {
-    id: string,
-    accessToken: string,
-    email: string,
-    name: string,
-};
-
 export const authOptions = {
     providers: [
         CredentialsProvider({
@@ -28,12 +22,12 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req): Promise<User|null> {
-                return await performAuthRequest(JSON.stringify(credentials)) as User;
+                return await performAuthRequest(JSON.stringify(credentials));
             },
         }),
     ],
     callbacks: {
-        async jwt({token, user}) {
+        async jwt({token, user}: {token: JWT, user?: User}) {
             if (user) {
                 token.id = user.id;
                 token.accessToken = user.accessToken;
@@ -49,7 +43,7 @@ export const authOptions = {
 
 export default NextAuth(authOptions);
 
-const performAuthRequest = async (jsonBody: string): Promise<AuthUser|null> => {
+const performAuthRequest = async (jsonBody: string): Promise<User|null> => {
     const res = await fetch( `${process.env.BACKEND_URL}/login`, {
         method: 'POST',
         body: jsonBody,
