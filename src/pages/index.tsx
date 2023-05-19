@@ -4,7 +4,7 @@ import { NextPageWithLayout } from './_app';
 import {useQuery} from "@tanstack/react-query";
 
 const fetchHomepageData = async () => {
-    const response = await fetch('/api/home-data');
+    const response = await fetch('/api/backend/users/profile');
 
     if (! response.ok) {
         throw new Error('Network response was not ok');
