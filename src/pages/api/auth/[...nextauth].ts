@@ -36,6 +36,10 @@ export const authOptions = {
             return token
         },
     },
+    session: {
+        // 4 hours in seconds - to align this with backend JWT expiration
+        maxAge: 60 * 60 * 4,
+    },
     pages: {
         signIn: '/auth/login',
     },
