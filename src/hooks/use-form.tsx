@@ -14,6 +14,7 @@ const useForm = (formObjectState: object): FormState => {
         const { name, value } = event.target;
 
         setFormObject(draft => {
+            // @ts-ignore
             draft[name] = value;
         });
     }
