@@ -17,7 +17,7 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout
 }
 
-function getDefaultLayout(page: ReactElement): ReactElement {
+function getDefaultLayout(page: ReactElement): ReactNode {
     return (
         <BaseAppLayout>
             {page}

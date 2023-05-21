@@ -1,9 +1,9 @@
-import {FunctionComponent} from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import AppNavbar from "@/components/app-navbar";
+import {ReactNode} from "react";
 
-const BaseAppLayout: FunctionComponent = ({ children }) => {
+const BaseAppLayout = ({ children }: {children: ReactNode}) => {
     return (
         <Container fluid>
             <AppNavbar />

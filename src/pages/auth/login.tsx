@@ -2,7 +2,6 @@ import {NextPageWithLayout} from "@/pages/_app";
 import Head from "next/head";
 import Col from "react-bootstrap/Col";
 import LoginForm from "@/components/login-form";
-import {ReactElement, ReactNode} from "react";
 import AuthLayout from "@/layouts/auth-layout";
 import {GetServerSidePropsContext, InferGetServerSidePropsType} from "next";
 import {getCsrfToken} from "next-auth/react";
@@ -20,7 +19,7 @@ const LoginPage: NextPageWithLayout<InferGetServerSidePropsType<typeof getServer
     )
 }
 
-LoginPage.getLayout = (page: ReactElement) => {
+LoginPage.getLayout = (page) => {
     return (
         <AuthLayout>
             {page}
