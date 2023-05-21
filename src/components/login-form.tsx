@@ -2,10 +2,10 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import useForm from "@/hooks/use-form";
-import {ReactElement} from "react";
+import {FunctionComponent} from "react";
 import LoginError from "@/components/login-error";
 
-export default function LoginForm({ csrfToken }): ReactElement {
+const LoginForm: FunctionComponent<{csrfToken: string}> = ({ csrfToken }) => {
     const { formObject: loginCredentials, onChangeInput } = useForm({
         email: '',
         password: '',
@@ -49,5 +49,7 @@ export default function LoginForm({ csrfToken }): ReactElement {
                 </Form>
             </Card.Body>
         </Card>
-    )
-}
+    );
+};
+
+export default LoginForm;
