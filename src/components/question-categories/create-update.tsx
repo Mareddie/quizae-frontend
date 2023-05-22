@@ -1,5 +1,6 @@
 import {FunctionComponent, useState} from "react";
 import {Modal, Button} from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 
 export type ModalVariant = 'create'|'update';
 
@@ -25,22 +26,34 @@ const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({varian
                 centered
                 size="lg"
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>{headings[variant]}</Modal.Title>
-                </Modal.Header>
+                <Form>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{headings[variant]}</Modal.Title>
+                    </Modal.Header>
 
-                <Modal.Body>
-                    I will not close if you click outside me. Don't even try to press
-                    escape key.
-                </Modal.Body>
+                    <Modal.Body>
+                        <Form.Group className="mb-3" controlId="questionCategoryName">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text" required />
+                        </Form.Group>
 
-                <Modal.Footer className="justify-content-between">
-                    <Button variant="secondary" onClick={onModalClose}>
-                        Close
-                    </Button>
+                        <Form.Group className="mb-3" controlId="questionCategoryName">
+                            <Form.Label>Priority</Form.Label>
+                            <Form.Control type="number" required />
+                            <Form.Text className="text-muted">
+                                This information is used for ordering. The higher the number, the higher order in the list.
+                            </Form.Text>
+                        </Form.Group>
+                    </Modal.Body>
 
-                    <Button variant={variant === 'create' ? 'success' : 'primary'}>Submit</Button>
-                </Modal.Footer>
+                    <Modal.Footer className="justify-content-between">
+                        <Button variant="secondary" onClick={onModalClose}>
+                            Close
+                        </Button>
+
+                        <Button variant={variant === 'create' ? 'success' : 'primary'}>Submit</Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
         </>
     );
