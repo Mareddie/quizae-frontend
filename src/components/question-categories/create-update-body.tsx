@@ -1,12 +1,12 @@
-import {Formik} from "formik";
+import {Formik, FormikProps, FormikValues} from "formik";
 import * as yup from "yup";
-import {FunctionComponent, ReactElement} from "react";
+import {ComponentType, FunctionComponent, ReactElement} from "react";
 import {Button, Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
 const QuestionCategorySchema = yup.object().shape({
     id: yup.string().uuid().optional(),
-    name: yup.string().required('Please provide name'),
+    name: yup.string().required(),
     priority: yup.number().moreThan(0).optional(),
 });
 
@@ -19,26 +19,46 @@ type ComponentInput = {
 
 const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = ({modalHeader, modalFooter}) => {
     return (
-        <Form>
-            {modalHeader}
+        <Formik validationSchema={QuestionCategorySchema}
+                initialValues={{
+                    name: '',
+                    priority: '',
+                }}
+                onSubmit={console.log}>
+            {({handleSubmit, values, handleChange, errors}) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                    {modalHeader}
 
-            <Modal.Body>
-                <Form.Group className="mb-3">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" name="name" required />
-                </Form.Group>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text"
+                                          name="name"
+                                          value={values.name}
+                                          onChange={handleChange}
+                                          isInvalid={!!errors.name}
+                            />
+                        </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Priority</Form.Label>
-                    <Form.Control type="number" name="priority" required />
-                    <Form.Text className="text-muted">
-                        This information is used for ordering. The higher the number, the higher order in the list.
-                    </Form.Text>
-                </Form.Group>
-            </Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Priority</Form.Label>
+                            <Form.Control type="text"
+                                          name="priority"
+                                          value={values.priority}
+                                          onChange={handleChange}
+                                          isInvalid={!!errors.priority}
+                            />
+                            <Form.Text className="text-muted">
+                                This information is used for ordering.
+                                The higher the number, the higher order in the list.
+                            </Form.Text>
+                        </Form.Group>
+                    </Modal.Body>
 
-            {modalFooter}
-        </Form>
+                    {modalFooter}
+                </Form>
+            )}
+        </Formik>
     );
 };
 

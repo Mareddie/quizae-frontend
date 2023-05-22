@@ -28,7 +28,7 @@ const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({varian
                 Close
             </Button>
 
-            <Button variant={variant === 'create' ? 'success' : 'primary'}>Submit</Button>
+            <Button variant={variant === 'create' ? 'success' : 'primary'} type="submit">Submit</Button>
         </Modal.Footer>
     );
 
