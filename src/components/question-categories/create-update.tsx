@@ -1,6 +1,6 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent} from "react";
 import {Modal, Button} from "react-bootstrap";
-import Form from "react-bootstrap/Form";
+import CreateUpdateQuestionCategoryBody from "@/components/question-categories/create-update-body";
 
 export type ModalVariant = 'create'|'update';
 
@@ -16,6 +16,22 @@ const headings = {
 };
 
 const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({variant, show, onModalClose}) => {
+    const modalHeader = (
+        <Modal.Header closeButton>
+            <Modal.Title>{headings[variant]}</Modal.Title>
+        </Modal.Header>
+    );
+
+    const modalFooter = (
+        <Modal.Footer className="justify-content-between">
+            <Button variant="secondary" onClick={onModalClose}>
+                Close
+            </Button>
+
+            <Button variant={variant === 'create' ? 'success' : 'primary'}>Submit</Button>
+        </Modal.Footer>
+    );
+
     return (
         <>
             <Modal
@@ -26,34 +42,7 @@ const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({varian
                 centered
                 size="lg"
             >
-                <Form>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{headings[variant]}</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <Form.Group className="mb-3" controlId="questionCategoryName">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" required />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="questionCategoryName">
-                            <Form.Label>Priority</Form.Label>
-                            <Form.Control type="number" required />
-                            <Form.Text className="text-muted">
-                                This information is used for ordering. The higher the number, the higher order in the list.
-                            </Form.Text>
-                        </Form.Group>
-                    </Modal.Body>
-
-                    <Modal.Footer className="justify-content-between">
-                        <Button variant="secondary" onClick={onModalClose}>
-                            Close
-                        </Button>
-
-                        <Button variant={variant === 'create' ? 'success' : 'primary'}>Submit</Button>
-                    </Modal.Footer>
-                </Form>
+                <CreateUpdateQuestionCategoryBody modalHeader={modalHeader} modalFooter={modalFooter} />
             </Modal>
         </>
     );
