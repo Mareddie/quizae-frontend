@@ -1,6 +1,7 @@
 import {FunctionComponent} from "react";
 import {Modal, Button} from "react-bootstrap";
 import CreateUpdateQuestionCategoryBody from "@/components/question-categories/create-update-body";
+import * as yup from "yup";
 
 export type ModalVariant = 'create'|'update';
 
@@ -8,6 +9,7 @@ type ComponentInput = {
     variant: ModalVariant,
     show: boolean,
     onModalClose: () => void,
+    questionCategoryData?: object,
 };
 
 const headings = {
@@ -15,7 +17,11 @@ const headings = {
     update: 'Update Question Category',
 };
 
-const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({variant, show, onModalClose}) => {
+const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = (
+    {variant, show, onModalClose, questionCategoryData}
+) => {
+    const parsedData = QuestionCategorySchema.validateSync(questionCategoryData, { strict: true });
+
     const modalHeader = (
         <Modal.Header closeButton>
             <Modal.Title>{headings[variant]}</Modal.Title>
@@ -42,10 +48,19 @@ const CreateUpdateQuestionCategory: FunctionComponent<ComponentInput> = ({varian
                 centered
                 size="lg"
             >
-                <CreateUpdateQuestionCategoryBody modalHeader={modalHeader} modalFooter={modalFooter} />
+                <CreateUpdateQuestionCategoryBody
+                    modalHeader={modalHeader}
+                    modalFooter={modalFooter}
+                    questionCategory={parsedData} />
             </Modal>
         </>
     );
 };
+
+export const QuestionCategorySchema = yup.object().shape({
+    id: yup.string().uuid().optional(),
+    name: yup.string().required(),
+    priority: yup.number().moreThan(0).integer().nullable().optional(),
+});
 
 export default CreateUpdateQuestionCategory;

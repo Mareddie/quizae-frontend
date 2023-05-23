@@ -1,28 +1,24 @@
 import {Formik} from "formik";
-import * as yup from "yup";
 import React, {FunctionComponent, ReactElement} from "react";
 import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
-
-const QuestionCategorySchema = yup.object().shape({
-    id: yup.string().uuid().optional(),
-    name: yup.string().required(),
-    priority: yup.number().moreThan(0).integer().optional(),
-});
-
-type QuestionCategory = yup.InferType<typeof QuestionCategorySchema>;
+import {QuestionCategorySchema} from "@/components/question-categories/create-update";
+import * as yup from "yup";
 
 type ComponentInput = {
     modalHeader: ReactElement,
     modalFooter: ReactElement,
+    questionCategory?: yup.InferType<typeof QuestionCategorySchema>
 };
 
-const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = ({modalHeader, modalFooter}) => {
+const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
+    {modalHeader, modalFooter, questionCategory}
+) => {
     return (
         <Formik validationSchema={QuestionCategorySchema}
                 initialValues={{
-                    name: '',
-                    priority: '',
+                    name: questionCategory?.name ?? '',
+                    priority: questionCategory?.priority ?? '',
                 }}
                 onSubmit={console.log}>
             {({handleSubmit, values, handleChange, errors}) => (

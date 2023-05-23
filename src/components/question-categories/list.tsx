@@ -23,10 +23,18 @@ const QuestionCategoryList: FunctionComponent = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [modalVariant, setModalVariant] = useState<ModalVariant>('create');
+    const [selectedCategory, setSelectedCategory] = useState<object|undefined>(undefined);
 
-    const prepareModal = (variant: ModalVariant) => {
+    const prepareModal = (variant: ModalVariant, questionCategoryData?: object) => {
         setModalVariant(variant);
         setShowModal(true);
+
+        if (! questionCategoryData) {
+            setSelectedCategory(undefined);
+            return;
+        }
+
+        setSelectedCategory(questionCategoryData);
     };
 
     if (questionCategories.status !== 'success') {
@@ -47,7 +55,8 @@ const QuestionCategoryList: FunctionComponent = () => {
 
             <CreateUpdateQuestionCategory variant={modalVariant}
                                           show={showModal}
-                                          onModalClose={() => setShowModal(false)} />
+                                          onModalClose={() => setShowModal(false)}
+                                          questionCategoryData={selectedCategory} />
 
             <Table striped bordered hover>
                 <thead>
@@ -61,7 +70,7 @@ const QuestionCategoryList: FunctionComponent = () => {
 
                 <tbody>
                 {
-                    questionCategories.data.map((questionCategory: any,) => {
+                    questionCategories.data.map((questionCategory: any, index: number) => {
                         return (
                             <tr key={'question-category-' + questionCategory.id}>
                                 <td>{questionCategory.id}</td>
@@ -72,7 +81,7 @@ const QuestionCategoryList: FunctionComponent = () => {
                                         <Button variant="primary">Detail</Button>
 
                                         <Button variant="secondary"
-                                                onClick={() => prepareModal('update')}>
+                                                onClick={() => prepareModal('update', questionCategory)}>
                                             Edit
                                         </Button>
 
