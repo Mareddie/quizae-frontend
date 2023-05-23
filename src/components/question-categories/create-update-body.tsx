@@ -1,13 +1,13 @@
-import {Formik, FormikProps, FormikValues} from "formik";
+import {Formik} from "formik";
 import * as yup from "yup";
-import {ComponentType, FunctionComponent, ReactElement} from "react";
-import {Button, Modal} from "react-bootstrap";
+import React, {FunctionComponent, ReactElement} from "react";
+import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
 const QuestionCategorySchema = yup.object().shape({
     id: yup.string().uuid().optional(),
     name: yup.string().required(),
-    priority: yup.number().moreThan(0).optional(),
+    priority: yup.number().moreThan(0).integer().optional(),
 });
 
 type QuestionCategory = yup.InferType<typeof QuestionCategorySchema>;
@@ -42,7 +42,7 @@ const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = ({mo
 
                         <Form.Group className="mb-3">
                             <Form.Label>Priority</Form.Label>
-                            <Form.Control type="text"
+                            <Form.Control type="number"
                                           name="priority"
                                           value={values.priority}
                                           onChange={handleChange}
