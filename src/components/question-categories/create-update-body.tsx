@@ -1,4 +1,4 @@
-import {Formik} from "formik";
+import {Formik, FormikValues} from "formik";
 import React, {FunctionComponent, ReactElement} from "react";
 import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
@@ -20,7 +20,7 @@ const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
                     name: questionCategory?.name ?? '',
                     priority: questionCategory?.priority ?? '',
                 }}
-                onSubmit={console.log}>
+                onSubmit={(data) => resolveFormSubmit(data, questionCategory)}>
             {({handleSubmit, values, handleChange, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                     {modalHeader}
@@ -56,6 +56,16 @@ const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
             )}
         </Formik>
     );
+};
+
+const resolveFormSubmit = async (data: FormikValues, originalQuestionCategory?: any) => {
+    const entryIdCandidate = originalQuestionCategory?.id ?? null;
+
+    if (entryIdCandidate !== null) {
+        // TODO: Update existing entry
+    }
+
+    // TODO: Create new entry
 };
 
 export default CreateUpdateQuestionCategoryBody;
