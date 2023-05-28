@@ -1,19 +1,16 @@
 import {Formik, FormikValues} from "formik";
-import React, {FunctionComponent, ReactElement} from "react";
+import React, {FunctionComponent} from "react";
 import {Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
-import {QuestionCategorySchema} from "@/components/question-categories/create-update";
+import {ModalHeader, ModalFooter} from "@/components/question-categories/create-update";
 import * as yup from "yup";
+import {QuestionCategorySchema} from "@/components/question-categories/store";
 
 type ComponentInput = {
-    modalHeader: ReactElement,
-    modalFooter: ReactElement,
     questionCategory?: yup.InferType<typeof QuestionCategorySchema>
 };
 
-const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
-    {modalHeader, modalFooter, questionCategory}
-) => {
+const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = ({questionCategory}) => {
     return (
         <Formik validationSchema={QuestionCategorySchema}
                 initialValues={{
@@ -23,7 +20,7 @@ const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
                 onSubmit={(data) => resolveFormSubmit(data, questionCategory)}>
             {({handleSubmit, values, handleChange, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
-                    {modalHeader}
+                    <ModalHeader />
 
                     <Modal.Body>
                         <Form.Group className="mb-3">
@@ -51,7 +48,7 @@ const CreateUpdateQuestionCategoryBody: FunctionComponent<ComponentInput> = (
                         </Form.Group>
                     </Modal.Body>
 
-                    {modalFooter}
+                    <ModalFooter />
                 </Form>
             )}
         </Formik>

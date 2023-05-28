@@ -1,9 +1,11 @@
-import {FunctionComponent, useState} from "react";
+import { FunctionComponent } from "react";
 import Col from "react-bootstrap/Col";
 import {ButtonGroup, Table} from "react-bootstrap";
 import {useQuery} from "@tanstack/react-query";
 import Button from "react-bootstrap/Button";
-import CreateUpdateQuestionCategory, {ModalVariant} from "@/components/question-categories/create-update";
+import CreateUpdateQuestionCategory from "@/components/question-categories/create-update";
+import {useSetAtom} from "jotai";
+import {showModalAtom, variantAtom, selectedCategoryAtom, ModalVariant} from "@/components/question-categories/store";
 
 const fetchQuestionCategories = async () => {
     const response = await fetch('/api/backend/question-categories');
@@ -21,9 +23,9 @@ const QuestionCategoryList: FunctionComponent = () => {
         queryFn: fetchQuestionCategories,
     });
 
-    const [showModal, setShowModal] = useState(false);
-    const [modalVariant, setModalVariant] = useState<ModalVariant>('create');
-    const [selectedCategory, setSelectedCategory] = useState<object|undefined>(undefined);
+    const setShowModal = useSetAtom(showModalAtom);
+    const setModalVariant = useSetAtom(variantAtom);
+    const setSelectedCategory = useSetAtom(selectedCategoryAtom);
 
     const prepareModal = (variant: ModalVariant, questionCategoryData?: object) => {
         setModalVariant(variant);
@@ -53,10 +55,7 @@ const QuestionCategoryList: FunctionComponent = () => {
                 Create Question Category
             </Button>
 
-            <CreateUpdateQuestionCategory variant={modalVariant}
-                                          show={showModal}
-                                          onModalClose={() => setShowModal(false)}
-                                          questionCategoryData={selectedCategory} />
+            <CreateUpdateQuestionCategory />
 
             <Table striped bordered hover>
                 <thead>
