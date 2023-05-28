@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
     "@tanstack/react-query": "^4.29.7",
     "@tanstack/react-query-devtools": "^4.29.7",
     "@types/http-proxy": "^1.17.11",
@@ -21,6 +22,7 @@
     "formik": "^2.2.9",
     "http-proxy": "^1.18.1",
     "immer": "^9.0.19",
+    "jotai": "^2.1.0",
     "next": "13.2.4",
     "next-auth": "^4.20.1",
     "react": "18.2.0",
@@ -29,5 +31,8 @@
     "typescript": "4.9.5",
     "use-immer": "^0.8.1",
     "yup": "^1.1.1"
+  },
+  "devDependencies": {
+    "@swc-jotai/react-refresh": "^0.0.8"
   }
 }
