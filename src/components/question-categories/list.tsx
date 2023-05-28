@@ -4,8 +4,15 @@ import {ButtonGroup, Table} from "react-bootstrap";
 import {useQuery} from "@tanstack/react-query";
 import Button from "react-bootstrap/Button";
 import CreateUpdateModal from "@/components/question-categories/cu-modal";
-import {useSetAtom} from "jotai";
-import {showModalAtom, variantAtom, selectedCategoryAtom, ModalVariant} from "@/components/question-categories/store";
+import {useAtomValue, useSetAtom} from "jotai";
+import {
+    showModalAtom,
+    variantAtom,
+    selectedCategoryAtom,
+    ModalVariant,
+    successMessage
+} from "@/components/question-categories/store";
+import Alert from "react-bootstrap/Alert";
 
 const fetchQuestionCategories = async () => {
     const response = await fetch('/api/backend/question-categories');
@@ -26,6 +33,7 @@ const QuestionCategoryList: FunctionComponent = () => {
     const setShowModal = useSetAtom(showModalAtom);
     const setModalVariant = useSetAtom(variantAtom);
     const setSelectedCategory = useSetAtom(selectedCategoryAtom);
+    const success = useAtomValue(successMessage);
 
     const prepareModal = (variant: ModalVariant, questionCategoryData?: object) => {
         setModalVariant(variant);
@@ -42,6 +50,8 @@ const QuestionCategoryList: FunctionComponent = () => {
     return (
         <Col lg={12}>
             <h2 className={'mb-3'}>Question Categories</h2>
+
+            {success && <Alert variant="success">{success}</Alert>}
 
             <Button variant="success"
                     className="my-3"
@@ -63,7 +73,7 @@ const QuestionCategoryList: FunctionComponent = () => {
 
                 <tbody>
                 {
-                    questionCategories.data.map((questionCategory: any, index: number) => {
+                    questionCategories.data.map((questionCategory: any) => {
                         return (
                             <tr key={'question-category-' + questionCategory.id}>
                                 <td>{questionCategory.id}</td>

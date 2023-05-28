@@ -33,6 +33,9 @@ export const authOptions = {
                 token.accessToken = user.accessToken;
             }
 
+            // TODO: there's still mismatch between session expiration and BE token exp / iat
+            // TODO: maybe implement custom encode / decode to address this?
+
             return token
         },
     },
