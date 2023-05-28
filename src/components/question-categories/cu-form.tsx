@@ -1,4 +1,4 @@
-import {Formik, FormikProps, FormikValues} from "formik";
+import {Formik, FormikHelpers, FormikProps, FormikValues} from "formik";
 import React, {FunctionComponent} from "react";
 import { Modal } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
@@ -26,11 +26,12 @@ type FormInitValues = {
 
 type FormSubmittedValues = {
     submittedData: FormikValues,
-    original?: yup.InferType<typeof QuestionCategorySchema>
+    helpers: FormikHelpers<FormikValues>,
+    original?: yup.InferType<typeof QuestionCategorySchema>,
 };
 
 const SubmitForm = async (
-    {submittedData, original}: FormSubmittedValues
+    {submittedData, helpers, original}: FormSubmittedValues
 ) => {
     const entryIdCandidate = original?.id ?? null;
 
@@ -55,9 +56,11 @@ const SubmitForm = async (
     if (! response.ok) {
         const errorResponse = await response.json();
 
+        helpers.setSubmitting(false);
         throw new Error(errorResponse.message);
     }
 
+    helpers.setSubmitting(false);
     return response.json();
 };
 
@@ -94,8 +97,12 @@ const CreateUpdateForm: FunctionComponent<ComponentInput> = ({questionCategory})
     return (
         <Formik validationSchema={QuestionCategorySchema}
                 initialValues={initValues}
-                onSubmit={(data) => {
-                    formMutation.mutate({submittedData: data, original: questionCategory})
+                onSubmit={(data, actions) => {
+                    formMutation.mutate({
+                        submittedData: data,
+                        helpers: actions,
+                        original: questionCategory
+                    })
                 }}
                 component={FormInternal}>
         </Formik>
@@ -103,7 +110,7 @@ const CreateUpdateForm: FunctionComponent<ComponentInput> = ({questionCategory})
 };
 
 const FormInternal: FunctionComponent<FormikProps<FormikValues>> = (
-    {handleSubmit, values, handleChange, errors}
+    {handleSubmit, values, handleChange, errors, isSubmitting}
 ) => {
     const variant = useAtomValue(variantAtom);
     const generalError = useAtomValue(createUpdateError);
@@ -137,7 +144,10 @@ const FormInternal: FunctionComponent<FormikProps<FormikValues>> = (
                     </Form.Text>
                 </Form.Group>
 
-                <Button variant={variant === 'create' ? 'success' : 'primary'} type={'submit'}>Submit</Button>
+                <Button variant={variant === 'create' ? 'success' : 'primary'}
+                        type={'submit'} disabled={isSubmitting}>
+                    Submit
+                </Button>
             </Form>
         </Modal.Body>
     );
