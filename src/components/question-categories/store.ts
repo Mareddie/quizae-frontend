@@ -13,4 +13,13 @@ export const variantAtom = atom<ModalVariant>('create');
 export const showModalAtom = atom<boolean>(false);
 export const selectedCategoryAtom = atom<object|undefined>(undefined);
 export const createUpdateError = atom<string|undefined>(undefined);
-export const successMessage = atom<string|undefined>(undefined);
+export const successMessage = atom(
+    (get) => get(internalSuccessMessage),
+    (get, set, newMessage: string|undefined) => {
+        set(internalSuccessMessage, newMessage)
+
+        setTimeout(() => set(internalSuccessMessage, undefined), 2000)
+    },
+);
+
+const internalSuccessMessage = atom<string|undefined>(undefined);
