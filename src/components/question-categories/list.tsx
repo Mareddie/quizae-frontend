@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import {ButtonGroup, Table} from "react-bootstrap";
 import {useQuery} from "@tanstack/react-query";
 import Button from "react-bootstrap/Button";
-import CreateUpdateQuestionCategory from "@/components/question-categories/create-update";
+import CreateUpdateModal from "@/components/question-categories/cu-modal";
 import {useSetAtom} from "jotai";
 import {showModalAtom, variantAtom, selectedCategoryAtom, ModalVariant} from "@/components/question-categories/store";
 
@@ -30,13 +30,7 @@ const QuestionCategoryList: FunctionComponent = () => {
     const prepareModal = (variant: ModalVariant, questionCategoryData?: object) => {
         setModalVariant(variant);
         setShowModal(true);
-
-        if (! questionCategoryData) {
-            setSelectedCategory(undefined);
-            return;
-        }
-
-        setSelectedCategory(questionCategoryData);
+        setSelectedCategory(questionCategoryData ?? undefined);
     };
 
     if (questionCategories.status !== 'success') {
@@ -55,7 +49,7 @@ const QuestionCategoryList: FunctionComponent = () => {
                 Create Question Category
             </Button>
 
-            <CreateUpdateQuestionCategory />
+            <CreateUpdateModal />
 
             <Table striped bordered hover>
                 <thead>
