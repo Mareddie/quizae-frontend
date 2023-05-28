@@ -11,6 +11,11 @@ type ComponentInput = {
     questionCategory?: yup.InferType<typeof QuestionCategorySchema>
 };
 
+type FormInitValues = {
+    name: string,
+    priority: string|number,
+};
+
 const FormInternal: FunctionComponent<FormikProps<FormikValues>> = (
     {handleSubmit, values, handleChange, errors}
 ) => {
@@ -50,12 +55,14 @@ const FormInternal: FunctionComponent<FormikProps<FormikValues>> = (
 };
 
 const CreateUpdateForm: FunctionComponent<ComponentInput> = ({questionCategory}) => {
+    const initValues: FormInitValues = {
+        name: questionCategory?.name ?? '',
+        priority: questionCategory?.priority ?? '',
+    };
+
     return (
         <Formik validationSchema={QuestionCategorySchema}
-                initialValues={{
-                    name: questionCategory?.name ?? '',
-                    priority: questionCategory?.priority ?? '',
-                }}
+                initialValues={initValues}
                 onSubmit={(data) => resolveFormSubmit(data, questionCategory)}
                 component={FormInternal}>
         </Formik>
