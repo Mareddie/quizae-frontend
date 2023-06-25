@@ -1,18 +1,16 @@
 import Head from 'next/head';
-import Col from 'react-bootstrap/Col';
 import { NextPageWithLayout } from './_app';
+import QuestionCategoryList from "@/components/question-categories/list";
 
-const DashboardPage: NextPageWithLayout = () => {
+const HomePage: NextPageWithLayout = () => {
     return (
         <>
             <Head>
                 <title key="title">Home | Quizae</title>
             </Head>
-            <Col md={6}>
-                <p>Welcome!</p>
-            </Col>
+            <QuestionCategoryList />
         </>
     )
 }
 
-export default DashboardPage
+export default HomePage

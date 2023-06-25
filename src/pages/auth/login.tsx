@@ -2,12 +2,11 @@ import {NextPageWithLayout} from "@/pages/_app";
 import Head from "next/head";
 import Col from "react-bootstrap/Col";
 import LoginForm from "@/components/login-form";
-import {ReactElement} from "react";
 import AuthLayout from "@/layouts/auth-layout";
 import {GetServerSidePropsContext, InferGetServerSidePropsType} from "next";
 import {getCsrfToken} from "next-auth/react";
 
-const LoginPage: NextPageWithLayout = ({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const LoginPage: NextPageWithLayout<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ csrfToken }) => {
     return (
         <>
             <Head>
@@ -20,7 +19,7 @@ const LoginPage: NextPageWithLayout = ({ csrfToken }: InferGetServerSidePropsTyp
     )
 }
 
-LoginPage.getLayout = (page: ReactElement) => {
+LoginPage.getLayout = (page) => {
     return (
         <AuthLayout>
             {page}
@@ -31,7 +30,7 @@ LoginPage.getLayout = (page: ReactElement) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
         props: {
-            csrfToken: await getCsrfToken(context) ?? null,
+            csrfToken: await getCsrfToken(context) ?? '',
         }
     };
 }

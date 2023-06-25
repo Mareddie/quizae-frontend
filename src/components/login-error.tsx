@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { ReactElement } from "react";
 
 export default function LoginError (): ReactElement|null {
-    const { error } = useRouter().query as string|undefined;
+    const { error } = useRouter().query as any;
 
     const errors = {
         CredentialsSignin: 'Sign in failed, please check provided credentials.',
@@ -15,7 +15,7 @@ export default function LoginError (): ReactElement|null {
 
     return (
         <>
-            <Alert variant="danger">{errors[error]}</Alert>
+            <Alert variant="danger">{errors[error as keyof typeof errors]}</Alert>
         </>
     );
 }
