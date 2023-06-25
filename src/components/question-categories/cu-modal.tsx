@@ -6,7 +6,8 @@ import {
     variantAtom,
     showModalAtom,
     selectedCategoryAtom,
-    QuestionCategorySchema, createUpdateError
+    QuestionCategorySchema,
+    createUpdateError
 } from "@/components/question-categories/store";
 
 const headings = {

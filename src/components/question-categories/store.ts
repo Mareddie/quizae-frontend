@@ -11,6 +11,7 @@ export const QuestionCategorySchema = yup.object().shape({
 
 export const variantAtom = atom<ModalVariant>('create');
 export const showModalAtom = atom<boolean>(false);
+export const showDeleteModalAtom = atom<boolean>(false);
 export const selectedCategoryAtom = atom<object|undefined>(undefined);
 export const createUpdateError = atom<string|undefined>(undefined);
 export const successMessage = atom(

@@ -10,9 +10,10 @@ import {
     variantAtom,
     selectedCategoryAtom,
     ModalVariant,
-    successMessage
+    successMessage, showDeleteModalAtom
 } from "@/components/question-categories/store";
 import Alert from "react-bootstrap/Alert";
+import DeleteModal from "@/components/question-categories/delete-modal";
 
 const fetchQuestionCategories = async () => {
     const response = await fetch('/api/backend/question-categories');
@@ -31,14 +32,21 @@ const QuestionCategoryList: FunctionComponent = () => {
     });
 
     const setShowModal = useSetAtom(showModalAtom);
+    const setShowDeleteModal = useSetAtom(showDeleteModalAtom);
     const setModalVariant = useSetAtom(variantAtom);
     const setSelectedCategory = useSetAtom(selectedCategoryAtom);
     const success = useAtomValue(successMessage);
 
-    const prepareModal = (variant: ModalVariant, questionCategoryData?: object) => {
+    const prepareModal = (variant: ModalVariant|'delete', questionCategoryData?: object) => {
+        setSelectedCategory(questionCategoryData ?? undefined);
+
+        if (variant === 'delete') {
+            setShowDeleteModal(true);
+            return;
+        }
+
         setModalVariant(variant);
         setShowModal(true);
-        setSelectedCategory(questionCategoryData ?? undefined);
     };
 
     if (questionCategories.status !== 'success') {
@@ -60,6 +68,7 @@ const QuestionCategoryList: FunctionComponent = () => {
             </Button>
 
             <CreateUpdateModal />
+            <DeleteModal />
 
             <Table striped bordered hover>
                 <thead>
@@ -88,7 +97,8 @@ const QuestionCategoryList: FunctionComponent = () => {
                                             Edit
                                         </Button>
 
-                                        <Button variant="danger">Delete</Button>
+                                        <Button variant="danger"
+                                                onClick={() => prepareModal('delete', questionCategory)}>Delete</Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
